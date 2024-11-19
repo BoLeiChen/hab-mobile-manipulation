@@ -35,7 +35,7 @@ conda create -n hab-mm python=3.7
 conda activate hab-mm
 # Install habitat-sim from source
 conda install cmake=3.14.0 patchelf ninja
-cd habitat-sim && pip install -r requirements.txt && python setup.py install --bullet --headless && cd ..
+cd habitat-sim && pip install -r requirements.txt && python setup.py install --bullet && cd ..
 # Install habitat-lab
 cd habitat-lab && pip install -r requirements.txt && python setup.py develop && cd ..
 # Install requirements
@@ -44,6 +44,7 @@ pip install -r requirements.txt
 python setup.py develop
 # Post-installation
 echo "export MAGNUM_LOG=quiet HABITAT_SIM_LOG=quiet" >> ~/.bashrc
+export PYTHONPATH=$PYTHONPATH:path/to/hab-mobile-manipulation
 ```
 
 We also provide a docker image: `docker pull jiayuangu/hab-mm`.
@@ -77,9 +78,25 @@ cd habitat-sim && pip install -r requirements.txt && python setup.py install --b
 python -m habitat_sim.utils.datasets_download --uids rearrange_task_assets
 # Generate physical config to correctly configure the simulator backend
 python -c "from habitat.datasets.utils import check_and_gen_physics_config; check_and_gen_physics_config()"
-# Download generated episodes
-pip install gdown
-gdown https://drive.google.com/drive/folders/1oEhsiqoWcEA2FNuQd9QfCPKNKgSwHbaW -O data/datasets/rearrange/v3 --folder
+# Generate episodes
+First, we need to enhance `habitat-lab/habitat/datasets/rearrange/rearrange_generator.py`:
+
+Modify <https://github.com/facebookresearch/habitat-lab/blob/2ec4f6832422faebf20ca413b1ebf78547a4855d/habitat/datasets/rearrange/rearrange_generator.py#L1036>
+
+```python
+args, opts = parser.parse_known_args()
+```
+
+Add some codes to parse optional arguments <https://github.com/facebookresearch/habitat-lab/blob/2ec4f6832422faebf20ca413b1ebf78547a4855d/habitat/datasets/rearrange/rearrange_generator.py#L1050>
+
+```python
+if opts is not None:
+    cfg.merge_from_list(opts)
+```
+
+Then, run `bash scripts/generate_episodes.sh` to generate episodes for Rearrangement tasks.
+
+Finally, run `python scripts/merge_episodes.py` to merge generated episodes into a single file.
 ```
 
 To re-generate our episodes, please refer to [episode generation](INSTRUCTIONS.md#episode-generation).
