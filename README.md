@@ -78,6 +78,7 @@ cd habitat-sim && pip install -r requirements.txt && python setup.py install --b
 python -m habitat_sim.utils.datasets_download --uids rearrange_task_assets
 # Generate physical config to correctly configure the simulator backend
 python -c "from habitat.datasets.utils import check_and_gen_physics_config; check_and_gen_physics_config()"
+```
 # Generate episodes
 First, we need to enhance `habitat-lab/habitat/datasets/rearrange/rearrange_generator.py`:
 
