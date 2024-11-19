@@ -98,9 +98,6 @@ if opts is not None:
 Then, run `bash scripts/generate_episodes.sh` to generate episodes for Rearrangement tasks.
 
 Finally, run `python scripts/merge_episodes.py` to merge generated episodes into a single file.
-```
-
-To re-generate our episodes, please refer to [episode generation](INSTRUCTIONS.md#episode-generation).
 
 ## Interactive play
 
